@@ -1,8 +1,9 @@
 using MyMediaArchive.Data.Entity;
 using MyMediaArchive.Data.Enum;
+using MyMediaArchive.Media.Service;
 using Spectre.Console;
 
-namespace MyMediaArchive.Media.Service;
+namespace MyMediaArchive.Media.View;
 
 public sealed class UserMenuService
 {
@@ -13,8 +14,6 @@ public sealed class UserMenuService
     public void HandleCreateMedia()
     {
         AnsiConsole.Clear();
-
-        var existingMedia = _mediaService.GetAll();
 
         var title = AnsiConsole.Ask<string>("Title:");
         var rating = AnsiConsole.Ask<double>("Rating:");
@@ -28,7 +27,9 @@ public sealed class UserMenuService
                 .AddChoices(Enum.GetValues<MediStatus>())
         );
 
-        var isItemExist = existingMedia.FirstOrDefault(i =>
+        var existingItem = _mediaService.GetAll();
+
+        var isItemExist = existingItem.FirstOrDefault(i =>
             i.Title.ToLower() == title.ToLower() && i.Year == year
         );
 
@@ -70,5 +71,14 @@ public sealed class UserMenuService
         {
             AnsiConsole.WriteLine("Cancelled.");
         }
+    }
+
+    public void HandleDeleteMedia()
+    {
+        AnsiConsole.Clear();
+
+        var existingItem = _mediaService.GetAll();
+
+        var id = AnsiConsole.Ask<int>("ID:");
     }
 }
