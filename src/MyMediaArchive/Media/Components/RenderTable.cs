@@ -14,7 +14,6 @@ public static class RenderTable
 
         var table = new Table().Title($"{title}").RoundedBorder().Expand();
 
-        table.AddColumn("Id");
         table.AddColumn("Title");
         table.AddColumn("Rating");
         table.AddColumn("Year");
@@ -26,7 +25,6 @@ public static class RenderTable
         foreach (var item in data)
         {
             table.AddRow(
-                $"{item.Id}",
                 $"{item.Title}",
                 $"{item.Rating}",
                 $"{item.Year}",

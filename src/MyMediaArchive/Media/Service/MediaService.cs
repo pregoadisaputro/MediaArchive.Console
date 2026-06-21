@@ -19,11 +19,11 @@ public sealed class MediaService
             .OrderByDescending(i => i.CreatedAt)
             .Select(i => new MediaItem
             {
-                Id = i.Id,
                 Title = i.Title,
                 Rating = i.Rating,
                 Year = i.Year,
                 Type = i.Type,
+                Status = i.Status,
                 CreatedAt = i.CreatedAt,
                 UpdatedAt = i.UpdatedAt,
             })
@@ -42,7 +42,12 @@ public sealed class MediaService
 
     public bool DeleteMedia(MediaItem item)
     {
-        var existingItem = mediaItems.FirstOrDefault(i => i.Id == item.Id);
+        if (item == null)
+            return false;
+
+        var existingItem = mediaItems.FirstOrDefault(i =>
+            i.Title.Equals(item.Title, StringComparison.OrdinalIgnoreCase)
+        );
 
         if (existingItem == null)
             return false;
@@ -58,12 +63,15 @@ public sealed class MediaService
         if (item == null)
             return false;
 
-        var existingItem = mediaItems.FirstOrDefault(i => i.Id == item.Id);
+        var existingItem = mediaItems.FirstOrDefault(i =>
+            i.Title.Equals(item.Title, StringComparison.OrdinalIgnoreCase)
+        );
 
         if (existingItem == null)
             return false;
 
         existingItem.Rating = item.Rating;
+        existingItem.UpdatedAt = DateTime.UtcNow;
         Save();
 
         return true;
@@ -71,12 +79,18 @@ public sealed class MediaService
 
     public bool UpdateStatusMedia(MediaItem item)
     {
-        var existingItem = mediaItems.FirstOrDefault(i => i.Id == item.Id);
+        if (item == null)
+            return false;
+
+        var existingItem = mediaItems.FirstOrDefault(i =>
+            i.Title.Equals(item.Title, StringComparison.OrdinalIgnoreCase)
+        );
 
         if (existingItem == null)
             return false;
 
         existingItem.Status = item.Status;
+        existingItem.UpdatedAt = DateTime.UtcNow;
         Save();
 
         return true;

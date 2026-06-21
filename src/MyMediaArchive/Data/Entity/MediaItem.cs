@@ -4,7 +4,6 @@ namespace MyMediaArchive.Data.Entity;
 
 public class MediaItem
 {
-    public int Id { get; set; }
     public required string Title { get; set; } = string.Empty;
     public double Rating { get; set; }
     public required string Year { get; set; } = string.Empty;
