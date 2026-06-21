@@ -89,6 +89,8 @@ public sealed class UserMenuService
 
         RenderTable.Table(existingItem, "Media to Delete:");
 
+        AnsiConsole.WriteLine();
+
         var userPrompt = AnsiConsole.Prompt(
             new MultiSelectionPrompt<string>()
                 .Title("Select Media to Delete:")
@@ -110,7 +112,7 @@ public sealed class UserMenuService
                 if (AnsiConsole.Confirm("Are you sure want to Delete?"))
                 {
                     _mediaService.DeleteMedia(isItemExist);
-                    AnsiConsole.MarkupLine("Removed!");
+                    AnsiConsole.MarkupLine($"Removed for item {isItemExist.Title}");
                 }
                 else
                 {
@@ -122,6 +124,8 @@ public sealed class UserMenuService
 
     public void HandleUpdateRatingMedia()
     {
+        AnsiConsole.Clear();
+
         var existingItem = _mediaService.GetAll();
 
         if (existingItem == null || !existingItem.Any())
@@ -132,9 +136,11 @@ public sealed class UserMenuService
 
         RenderTable.Table(existingItem, "Update Media Rating:");
 
+        AnsiConsole.WriteLine();
+
         var userPrompt = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title("Status to Update:")
+                .Title("Rating to Update:")
                 .AddChoices(existingItem.Select(i => $"{i.Title} | {i.Year}"))
         );
 
@@ -142,6 +148,8 @@ public sealed class UserMenuService
 
         if (isItemExist != null)
         {
+            AnsiConsole.WriteLine();
+
             var rating = AnsiConsole.Ask<double>("Enter new Rating: (e.g 1.0 - 10)");
 
             if (AnsiConsole.Confirm("Sure want to update?"))
@@ -154,7 +162,7 @@ public sealed class UserMenuService
                 };
 
                 _mediaService.UpdateRatingMedia(ratingUpdated);
-                AnsiConsole.MarkupLine("Rating Updated!");
+                AnsiConsole.MarkupLine($"Rating Updated for {isItemExist.Title}!");
             }
             else
             {
