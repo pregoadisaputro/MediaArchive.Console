@@ -38,6 +38,7 @@ public sealed class UserMenuService
         };
 
         AnsiConsole.WriteLine();
+
         var summary = new Panel(
             new Rows(
                 new Markup($"Title: {newMedia.Title}"),
@@ -49,7 +50,9 @@ public sealed class UserMenuService
         )
             .Header("Summary")
             .Border(BoxBorder.Rounded);
+
         AnsiConsole.Write(summary);
+
         AnsiConsole.WriteLine();
 
         if (AnsiConsole.Confirm("Add?"))
@@ -151,6 +154,61 @@ public sealed class UserMenuService
 
             _mediaService.UpdateRatingMedia(ratingUpdated);
             AnsiConsole.MarkupLine($"Rating Updated for {selectedItem.Title} | {rating}");
+        }
+        else
+        {
+            AnsiConsole.MarkupLine("Cancelled!");
+        }
+    }
+
+    public void HandleUpdateStatusMedia()
+    {
+        AnsiConsole.Clear();
+
+        var existingItem = _mediaService.GetAll();
+
+        if (existingItem == null || !existingItem.Any())
+        {
+            AnsiConsole.MarkupLine("Media does not exist yet.");
+            return;
+        }
+
+        RenderTable.Table(existingItem, "Update Media Status:");
+
+        AnsiConsole.WriteLine();
+
+        var selectedItem = AnsiConsole.Prompt(
+            new SelectionPrompt<MediaItem>()
+                .Title("Select:")
+                .UseConverter(i => $"{i.Title} | {i.Year} | {i.Status}")
+                .AddChoices(existingItem)
+        );
+
+        AnsiConsole.WriteLine();
+
+        var selectedStatus = AnsiConsole.Prompt(
+            new SelectionPrompt<MediStatus>()
+                .Title("Status:")
+                .AddChoices(Enum.GetValues<MediStatus>())
+        );
+
+        if (
+            AnsiConsole.Confirm(
+                $"Update the Status for {selectedItem.Title} from {selectedItem.Status} to {selectedStatus}?"
+            )
+        )
+        {
+            var statusUpdated = new MediaItem
+            {
+                Title = selectedItem.Title,
+                Year = selectedItem.Year,
+                Status = selectedStatus,
+            };
+
+            _mediaService.UpdateStatusMedia(statusUpdated);
+            AnsiConsole.MarkupLine(
+                $"Status Updated for {selectedItem.Title} | {statusUpdated.Status}"
+            );
         }
         else
         {
