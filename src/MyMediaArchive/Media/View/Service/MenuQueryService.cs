@@ -58,25 +58,26 @@ public sealed class MenuQueryService
     {
         AnsiConsole.Clear();
 
-        var type = AnsiConsole.Ask<string>("Enter the Type:");
-
-        if (!Enum.TryParse<MediaType>(type, true, out var value))
-            return [];
+        var userChoice = AnsiConsole.Prompt(
+            new SelectionPrompt<MediaType>()
+                .Title("Select the Type:")
+                .AddChoices(Enum.GetValues<MediaType>())
+        );
 
         var mediaItem = _mediaService
             .GetAll()
-            .Where(i => i.Type == value)
-            .OrderBy(i => i.Title)
+            .Where(i => i.Type == userChoice)
+            .OrderBy(i => i.Type)
             .ToList()
             .AsReadOnly();
 
         if (mediaItem.Count == 0)
         {
-            AnsiConsole.MarkupLine($"Media with Type {value} does not exist.");
+            AnsiConsole.MarkupLine($"Media with Type {userChoice} does not exist.");
             return mediaItem;
         }
 
-        RenderTable.Table(mediaItem, $"Type: {value}");
+        RenderTable.Table(mediaItem, $"Type: {userChoice}");
 
         return mediaItem;
     }
@@ -85,25 +86,26 @@ public sealed class MenuQueryService
     {
         AnsiConsole.Clear();
 
-        var status = AnsiConsole.Ask<string>("Enter the Status:");
-
-        if (!Enum.TryParse<MediStatus>(status, true, out var value))
-            return [];
+        var userChoice = AnsiConsole.Prompt(
+            new SelectionPrompt<MediStatus>()
+                .Title("Select the Status")
+                .AddChoices(Enum.GetValues<MediStatus>())
+        );
 
         var mediaItem = _mediaService
             .GetAll()
-            .Where(i => i.Status == value)
+            .Where(i => i.Status == userChoice)
             .OrderByDescending(i => i.UpdatedAt)
             .ToList()
             .AsReadOnly();
 
         if (mediaItem.Count == 0)
         {
-            AnsiConsole.MarkupLine($"Media with Status {value} does not exist.");
+            AnsiConsole.MarkupLine($"Media with Status {userChoice} does not exist.");
             return mediaItem;
         }
 
-        RenderTable.Table(mediaItem, $"Status: {value}");
+        RenderTable.Table(mediaItem, $"Status: {userChoice}");
 
         return mediaItem;
     }

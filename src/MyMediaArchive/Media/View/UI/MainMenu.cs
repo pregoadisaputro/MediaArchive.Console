@@ -28,7 +28,15 @@ public sealed class MainMenu
             var userChoice = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
                     .Title("Choose:")
-                    .AddChoices("Add Media", "See All Media", "Find Media", "Exit")
+                    .AddChoiceGroup(
+                        "Media Management",
+                        new[] { "Add Media", "Delete Media", "Update Rating", "Update Status" }
+                    )
+                    .AddChoiceGroup(
+                        "See Media",
+                        new[] { "See All Media", "Find", "See By Type", "See By Status" }
+                    )
+                    .AddChoices("Exit")
             );
 
             switch (userChoice)
@@ -37,16 +45,37 @@ public sealed class MainMenu
                     _userMenuService.HandleCreateMedia();
                     break;
 
+                case "Delete Media":
+                    _userMenuService.HandleDeleteMedia();
+                    break;
+
+                case "Update Rating":
+                    _userMenuService.HandleUpdateRatingMedia();
+                    break;
+
+                case "Update Status":
+                    _userMenuService.HandleUpdateStatusMedia();
+                    break;
+
                 case "See All Media":
                     _menuQueryService.SeeAllMedia();
                     break;
 
-                case "Find Media":
+                case "Find":
                     _menuQueryService.FindMedia();
                     break;
 
+                case "See By Type":
+                    _menuQueryService.SeeMediaByType();
+                    break;
+
+                case "See By Status":
+                    _menuQueryService.SeeMediaByStatus();
+                    break;
+
                 case "Exit":
-                    AnsiConsole.MarkupLine("Exited.");
+                    AnsiConsole.MarkupLine("See ya!");
+                    AnsiConsole.Clear();
                     isRunning = false;
                     break;
             }

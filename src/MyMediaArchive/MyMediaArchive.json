@@ -1,11 +1,11 @@
 [
   {
     "title": "prego",
-    "rating": 8.5,
+    "rating": 10,
     "year": "2002",
     "type": "movies",
     "status": "completed",
     "createdAt": "2026-06-21T22:44:39.2569096Z",
-    "updatedAt": "2026-06-21T22:44:39.2569097Z"
+    "updatedAt": "2026-06-21T23:47:40.0393017Z"
   }
 ]
