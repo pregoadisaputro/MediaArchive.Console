@@ -4,7 +4,7 @@ using MyMediaArchive.Media.Components;
 using MyMediaArchive.Media.Service;
 using Spectre.Console;
 
-namespace MyMediaArchive.Media.View;
+namespace MyMediaArchive.Media.View.Service;
 
 public sealed class UserMenuService
 {
