@@ -15,29 +15,26 @@ public sealed class MediaService
 
     public IReadOnlyList<MediaItem> GetAll()
     {
-        return mediaItems
-            .OrderByDescending(i => i.CreatedAt)
-            .Select(i => new MediaItem
-            {
-                Title = i.Title,
-                Rating = i.Rating,
-                Year = i.Year,
-                Type = i.Type,
-                Status = i.Status,
-                CreatedAt = i.CreatedAt,
-                UpdatedAt = i.UpdatedAt,
-            })
-            .ToList()
-            .AsReadOnly();
+        return mediaItems.OrderByDescending(i => i.CreatedAt).ToList().AsReadOnly();
     }
 
-    public void CreateMedia(MediaItem item)
+    public bool CreateMedia(MediaItem item)
     {
         if (item == null)
-            return;
+            return false;
+
+        var isItemExist = mediaItems.Any(i =>
+            i.Title.Equals(item.Title, StringComparison.OrdinalIgnoreCase)
+            && i.Year.Equals(item.Year, StringComparison.OrdinalIgnoreCase)
+        );
+
+        if (isItemExist)
+            return false;
 
         mediaItems.Add(item);
         Save();
+
+        return true;
     }
 
     public bool DeleteMedia(MediaItem item)
@@ -45,9 +42,7 @@ public sealed class MediaService
         if (item == null)
             return false;
 
-        var existingItem = mediaItems.FirstOrDefault(i =>
-            i.Title.Equals(item.Title, StringComparison.OrdinalIgnoreCase) && i.Year == item.Year
-        );
+        var existingItem = FindItem(item.Title, item.Year);
 
         if (existingItem == null)
             return false;
@@ -63,9 +58,7 @@ public sealed class MediaService
         if (item == null)
             return false;
 
-        var existingItem = mediaItems.FirstOrDefault(i =>
-            i.Title.Equals(item.Title, StringComparison.OrdinalIgnoreCase) && i.Year == item.Year
-        );
+        var existingItem = FindItem(item.Title, item.Year);
 
         if (existingItem == null)
             return false;
@@ -82,9 +75,7 @@ public sealed class MediaService
         if (item == null)
             return false;
 
-        var existingItem = mediaItems.FirstOrDefault(i =>
-            i.Title.Equals(item.Title, StringComparison.OrdinalIgnoreCase) && i.Year == item.Year
-        );
+        var existingItem = FindItem(item.Title, item.Year);
 
         if (existingItem == null)
             return false;
@@ -99,5 +90,18 @@ public sealed class MediaService
     private void Save()
     {
         JsonService.SaveData(mediaItems, _filePath);
+    }
+
+    private MediaItem? FindItem(string title, string year)
+    {
+        if (string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(year))
+        {
+            return null;
+        }
+
+        return mediaItems.FirstOrDefault(i =>
+            i.Title.Equals(title, StringComparison.OrdinalIgnoreCase)
+            && i.Year.Equals(year, StringComparison.OrdinalIgnoreCase)
+        );
     }
 }

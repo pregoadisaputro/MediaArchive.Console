@@ -28,18 +28,6 @@ public sealed class UserMenuService
                 .AddChoices(Enum.GetValues<MediStatus>())
         );
 
-        var existingItem = _mediaService.GetAll();
-
-        var isItemExist = existingItem.FirstOrDefault(i =>
-            i.Title.Equals(title, StringComparison.OrdinalIgnoreCase) && i.Year == year
-        );
-
-        if (isItemExist != null)
-        {
-            AnsiConsole.WriteLine($"Media with Title: {title} | Year {year} already exist.");
-            return;
-        }
-
         var newMedia = new MediaItem
         {
             Title = title,
@@ -66,8 +54,16 @@ public sealed class UserMenuService
 
         if (AnsiConsole.Confirm("Add?"))
         {
-            _mediaService.CreateMedia(newMedia);
-            AnsiConsole.WriteLine("Added!");
+            var isAdded = _mediaService.CreateMedia(newMedia);
+
+            if (isAdded)
+            {
+                AnsiConsole.MarkupLine("Added!");
+            }
+            else
+            {
+                AnsiConsole.MarkupLine($"Media with Title: {title} | Year {year} already exist.");
+            }
         }
         else
         {
@@ -103,20 +99,18 @@ public sealed class UserMenuService
             return;
         }
 
-        foreach (var choice in userPrompt)
+        if (AnsiConsole.Confirm($"Are you sure want to delete these {userPrompt.Count} items?"))
         {
-            var isItemExist = existingItem.FirstOrDefault(i => $"{i.Title} | {i.Year}" == choice);
-
-            if (isItemExist != null)
+            foreach (var choice in userPrompt)
             {
-                if (AnsiConsole.Confirm("Are you sure want to Delete?"))
+                var removedItem = existingItem.FirstOrDefault(i =>
+                    $"{i.Title} | {i.Year}" == choice
+                );
+
+                if (removedItem != null)
                 {
-                    _mediaService.DeleteMedia(isItemExist);
-                    AnsiConsole.MarkupLine($"Removed for item {isItemExist.Title}");
-                }
-                else
-                {
-                    AnsiConsole.MarkupLine("Cancelled!");
+                    _mediaService.DeleteMedia(removedItem);
+                    AnsiConsole.MarkupLine($"Removed item: {removedItem.Title}");
                 }
             }
         }
