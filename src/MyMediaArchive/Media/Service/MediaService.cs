@@ -46,7 +46,7 @@ public sealed class MediaService
             return false;
 
         var existingItem = mediaItems.FirstOrDefault(i =>
-            i.Title.Equals(item.Title, StringComparison.OrdinalIgnoreCase)
+            i.Title.Equals(item.Title, StringComparison.OrdinalIgnoreCase) && i.Year == item.Year
         );
 
         if (existingItem == null)
@@ -64,7 +64,7 @@ public sealed class MediaService
             return false;
 
         var existingItem = mediaItems.FirstOrDefault(i =>
-            i.Title.Equals(item.Title, StringComparison.OrdinalIgnoreCase)
+            i.Title.Equals(item.Title, StringComparison.OrdinalIgnoreCase) && i.Year == item.Year
         );
 
         if (existingItem == null)
@@ -83,7 +83,7 @@ public sealed class MediaService
             return false;
 
         var existingItem = mediaItems.FirstOrDefault(i =>
-            i.Title.Equals(item.Title, StringComparison.OrdinalIgnoreCase)
+            i.Title.Equals(item.Title, StringComparison.OrdinalIgnoreCase) && i.Year == item.Year
         );
 
         if (existingItem == null)

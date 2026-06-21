@@ -31,7 +31,7 @@ public sealed class UserMenuService
         var existingItem = _mediaService.GetAll();
 
         var isItemExist = existingItem.FirstOrDefault(i =>
-            i.Title.ToLower() == title.ToLower() && i.Year == year
+            i.Title.Equals(title, StringComparison.OrdinalIgnoreCase) && i.Year == year
         );
 
         if (isItemExist != null)
