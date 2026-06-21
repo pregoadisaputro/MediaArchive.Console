@@ -6,11 +6,11 @@ using Spectre.Console;
 
 namespace MyMediaArchive.Media.View.Service;
 
-public sealed class UserMenuService
+public sealed class HandlingUserMenuService
 {
     private readonly MediaService _mediaService;
 
-    public UserMenuService(MediaService mediaService) => _mediaService = mediaService;
+    public HandlingUserMenuService(MediaService mediaService) => _mediaService = mediaService;
 
     public void HandleCreateMedia()
     {
