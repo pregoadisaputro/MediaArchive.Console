@@ -20,6 +20,11 @@ public sealed class MenuQueryService
             .ToList()
             .AsReadOnly();
 
+        if (mediaItem.Count == 0)
+        {
+            AnsiConsole.MarkupLine("Media does not exist yet.");
+        }
+
         RenderTable.Table(mediaItem, "All Media");
 
         return mediaItem;
@@ -39,11 +44,17 @@ public sealed class MenuQueryService
         var mediaItem = _mediaService
             .GetAll()
             .Where(i => i.Type == value)
-            .OrderBy(i => i.Type)
+            .OrderBy(i => i.Title)
             .ToList()
             .AsReadOnly();
 
-        RenderTable.Table(mediaItem, $"Media by {type}");
+        if (mediaItem.Count == 0)
+        {
+            AnsiConsole.MarkupLine($"Media with Type {value} does not exist.");
+            return mediaItem;
+        }
+
+        RenderTable.Table(mediaItem, $"Type: {value}");
 
         return mediaItem;
     }
@@ -60,11 +71,17 @@ public sealed class MenuQueryService
         var mediaItem = _mediaService
             .GetAll()
             .Where(i => i.Status == value)
-            .OrderBy(i => i.Status)
+            .OrderByDescending(i => i.UpdatedAt)
             .ToList()
             .AsReadOnly();
 
-        RenderTable.Table(mediaItem, $"Media by {status}");
+        if (mediaItem.Count == 0)
+        {
+            AnsiConsole.MarkupLine($"Media with Status {value} does not exist.");
+            return mediaItem;
+        }
+
+        RenderTable.Table(mediaItem, $"Status: {value}");
 
         return mediaItem;
     }
