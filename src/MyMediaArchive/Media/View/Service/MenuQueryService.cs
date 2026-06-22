@@ -14,6 +14,8 @@ public sealed class MenuQueryService
 
     public IReadOnlyList<MediaItem> SeeAllMedia()
     {
+        AnsiConsole.Clear();
+
         var mediaItem = _mediaService
             .GetAll()
             .OrderByDescending(i => i.CreatedAt)

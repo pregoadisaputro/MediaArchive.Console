@@ -1,6 +1,5 @@
 using MyMediaArchive.Data.Entity;
 using MyMediaArchive.Data.Enum;
-using MyMediaArchive.Media.Components;
 using MyMediaArchive.Media.Service;
 using Spectre.Console;
 
@@ -86,14 +85,14 @@ public sealed class HandlingUserMenuService
             return;
         }
 
-        RenderTable.Table(existingItem, "Media to Delete:");
-
         AnsiConsole.WriteLine();
 
         var selectedItem = AnsiConsole.Prompt(
             new MultiSelectionPrompt<MediaItem>()
                 .Title("Select Media to Delete:")
                 .UseConverter(i => $"{i.Title} | {i.Year}")
+                .PageSize(10)
+                .MoreChoicesText("Use arrow keys to see more")
                 .AddChoices(existingItem)
         );
 
@@ -101,6 +100,25 @@ public sealed class HandlingUserMenuService
         {
             AnsiConsole.WriteLine("Cancelled!");
             return;
+        }
+
+        foreach (var choice in selectedItem)
+        {
+            var summary = new Panel(
+                new Rows(
+                    new Markup($"Title: {choice.Title}"),
+                    new Markup($"Rating: {choice.Rating}"),
+                    new Markup($"Year: {choice.Year}"),
+                    new Markup($"Type: {choice.Type}"),
+                    new Markup($"Status: {choice.Status}")
+                )
+            )
+                .Header("Summary")
+                .Border(BoxBorder.Rounded);
+
+            AnsiConsole.Write(summary);
+
+            AnsiConsole.WriteLine();
         }
 
         if (AnsiConsole.Confirm($"Are you sure want to delete these {selectedItem.Count} items?"))
@@ -113,6 +131,11 @@ public sealed class HandlingUserMenuService
                     AnsiConsole.MarkupLine($"Removed item: {choice.Title}");
                 }
             }
+        }
+        else
+        {
+            AnsiConsole.WriteLine();
+            AnsiConsole.MarkupLine("Cancelled!");
         }
     }
 
@@ -128,20 +151,32 @@ public sealed class HandlingUserMenuService
             return;
         }
 
-        RenderTable.Table(existingItem, "Update Media Rating:");
-
         AnsiConsole.WriteLine();
 
         var selectedItem = AnsiConsole.Prompt(
             new SelectionPrompt<MediaItem>()
                 .Title("Rating to Update:")
                 .UseConverter(i => $"{i.Title} | {i.Year}")
+                .PageSize(10)
+                .MoreChoicesText("Use arrow keys to see more")
                 .AddChoices(existingItem)
         );
 
         AnsiConsole.WriteLine();
 
         var rating = AnsiConsole.Ask<double>("Enter new Rating: (e.g 1.0 - 10)");
+
+        AnsiConsole.WriteLine();
+
+        var summary = new Panel(
+            new Rows(new Markup($"Title: {selectedItem.Title}"), new Markup($"Rating: {rating}"))
+        )
+            .Header("Summary")
+            .Border(BoxBorder.Rounded);
+
+        AnsiConsole.Write(summary);
+
+        AnsiConsole.WriteLine();
 
         if (AnsiConsole.Confirm($"Update the rating for {selectedItem.Title} to {rating}?"))
         {
@@ -157,6 +192,7 @@ public sealed class HandlingUserMenuService
         }
         else
         {
+            AnsiConsole.WriteLine();
             AnsiConsole.MarkupLine("Cancelled!");
         }
     }
@@ -173,14 +209,14 @@ public sealed class HandlingUserMenuService
             return;
         }
 
-        RenderTable.Table(existingItem, "Update Media Status:");
-
         AnsiConsole.WriteLine();
 
         var selectedItem = AnsiConsole.Prompt(
             new SelectionPrompt<MediaItem>()
                 .Title("Select:")
                 .UseConverter(i => $"{i.Title} | {i.Year} | {i.Status}")
+                .PageSize(10)
+                .MoreChoicesText("Use arrow keys to see more")
                 .AddChoices(existingItem)
         );
 
@@ -191,6 +227,21 @@ public sealed class HandlingUserMenuService
                 .Title("Status:")
                 .AddChoices(Enum.GetValues<MediStatus>())
         );
+
+        AnsiConsole.WriteLine();
+
+        var summary = new Panel(
+            new Rows(
+                new Markup($"Title: {selectedItem.Title}"),
+                new Markup($"Status: {selectedStatus}")
+            )
+        )
+            .Header("Summary")
+            .Border(BoxBorder.Rounded);
+
+        AnsiConsole.Write(summary);
+
+        AnsiConsole.WriteLine();
 
         if (
             AnsiConsole.Confirm(
