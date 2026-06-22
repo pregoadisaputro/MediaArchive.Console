@@ -1,7 +1,6 @@
 using MyMediaArchive.Data.Entity;
 using MyMediaArchive.Data.Enum;
 using MyMediaArchive.Media.Service;
-using MyMediaArchive.Media.View.Shared;
 using Spectre.Console;
 
 namespace MyMediaArchive.Media.View.Service;
@@ -80,7 +79,7 @@ public sealed class HandlingUserMenuService
 
         var existingItem = _mediaService.GetAll();
 
-        if (existingItem == null || !existingItem.Any())
+        if (existingItem.Count == 0)
         {
             AnsiConsole.WriteLine("Media does not exist yet.");
             return;
@@ -91,6 +90,7 @@ public sealed class HandlingUserMenuService
         var selectedItem = AnsiConsole.Prompt(
             new MultiSelectionPrompt<MediaItem>()
                 .Title("Select Media to Delete:")
+                .NotRequired()
                 .UseConverter(i => $"{i.Title} | {i.Year}")
                 .PageSize(10)
                 .MoreChoicesText("Use arrow keys to see more")
@@ -146,7 +146,7 @@ public sealed class HandlingUserMenuService
 
         var existingItem = _mediaService.GetAll();
 
-        if (existingItem == null || !existingItem.Any())
+        if (existingItem.Count == 0)
         {
             AnsiConsole.MarkupLine("Media does not exist yet.");
             return;
@@ -204,7 +204,7 @@ public sealed class HandlingUserMenuService
 
         var existingItem = _mediaService.GetAll();
 
-        if (existingItem == null || !existingItem.Any())
+        if (existingItem.Count == 0)
         {
             AnsiConsole.MarkupLine("Media does not exist yet.");
             return;

@@ -68,14 +68,21 @@ public sealed class MenuQueryService
     {
         AnsiConsole.Clear();
 
+        var existingItem = _mediaService.GetAll();
+
+        if (existingItem.Count == 0)
+        {
+            AnsiConsole.MarkupLine("Media does not exist yet");
+            return [];
+        }
+
         var userChoice = AnsiConsole.Prompt(
             new SelectionPrompt<MediaType>()
                 .Title("Select the Type:")
                 .AddChoices(Enum.GetValues<MediaType>())
         );
 
-        var mediaItem = _mediaService
-            .GetAll()
+        var mediaItem = existingItem
             .Where(i => i.Type == userChoice)
             .OrderBy(i => i.Type)
             .ToList()
@@ -96,14 +103,21 @@ public sealed class MenuQueryService
     {
         AnsiConsole.Clear();
 
+        var existingItem = _mediaService.GetAll();
+
+        if (existingItem.Count == 0)
+        {
+            AnsiConsole.WriteLine("Media does not exist yet");
+            return [];
+        }
+
         var userChoice = AnsiConsole.Prompt(
             new SelectionPrompt<MediStatus>()
                 .Title("Select the Status")
                 .AddChoices(Enum.GetValues<MediStatus>())
         );
 
-        var mediaItem = _mediaService
-            .GetAll()
+        var mediaItem = existingItem
             .Where(i => i.Status == userChoice)
             .OrderByDescending(i => i.UpdatedAt)
             .ToList()
