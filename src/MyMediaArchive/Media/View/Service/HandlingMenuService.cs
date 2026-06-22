@@ -16,17 +16,15 @@ public sealed class HandlingUserMenuService
     {
         AnsiConsole.Clear();
 
-        var title = AnsiConsole.Ask<string>($"[{AppColor.PrimaryText}]Title:[/]");
-        var rating = AnsiConsole.Ask<double>($"[{AppColor.PrimaryText}]Rating:[/]");
-        var year = AnsiConsole.Ask<string>($"[{AppColor.PrimaryText}]Year:[/]");
+        var title = AnsiConsole.Ask<string>($"Title:");
+        var rating = AnsiConsole.Ask<double>($"Rating:");
+        var year = AnsiConsole.Ask<string>($"Year:");
         var type = AnsiConsole.Prompt(
-            new SelectionPrompt<MediaType>()
-                .Title($"[{AppColor.PrimaryText}]Type:[/]")
-                .AddChoices(Enum.GetValues<MediaType>())
+            new SelectionPrompt<MediaType>().Title($"Type:").AddChoices(Enum.GetValues<MediaType>())
         );
         var status = AnsiConsole.Prompt(
             new SelectionPrompt<MediStatus>()
-                .Title($"[{AppColor.PrimaryText}]Status:[/]")
+                .Title($"Status:")
                 .AddChoices(Enum.GetValues<MediStatus>())
         );
 
@@ -43,21 +41,11 @@ public sealed class HandlingUserMenuService
 
         var summary = new Panel(
             new Rows(
-                new Markup(
-                    $"[{AppColor.PrimaryText}]Title:[/] [{AppColor.SecondaryText}]{newMedia.Title}[/]"
-                ),
-                new Markup(
-                    $"[{AppColor.PrimaryText}]Rating:[/] [{AppColor.SecondaryText}]{newMedia.Rating}[/]"
-                ),
-                new Markup(
-                    $"[{AppColor.PrimaryText}]Year:[/] [{AppColor.SecondaryText}]{newMedia.Year}[/]"
-                ),
-                new Markup(
-                    $"[{AppColor.PrimaryText}]Type:[/] [{AppColor.SecondaryText}]{newMedia.Type}[/]"
-                ),
-                new Markup(
-                    $"[{AppColor.PrimaryText}]Status:[/] [{AppColor.SecondaryText}]{newMedia.Status}[/]"
-                )
+                new Markup($"Title: {newMedia.Title}"),
+                new Markup($"Rating: {newMedia.Rating}"),
+                new Markup($"Year: {newMedia.Year}"),
+                new Markup($"Type: {newMedia.Type}"),
+                new Markup($"Status: {newMedia.Status}")
             )
         )
             .Header("Summary")
